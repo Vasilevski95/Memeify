@@ -1,0 +1,535 @@
+Installation:
+
+First install these packages with npm install:
+react-redux @redux.js/toolkit redux-persist, react-dropzone, doetenv, formik, yup, react-router-dom@6, @mui/material,
+@emotion/styled, @mui/icons-material
+
+Then import rubik font from google fonts
+
+
+
+
+
+
+
+index.js:
+
+This is a JavaScript/React code that sets up a Redux store and uses
+Redux Persist to persist and rehydrate the store across page refreshes.
+
+First, it imports the necessary modules including React, ReactDOM, App, authReducer, configureStore,
+Provider, persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, and REGISTER.
+
+It then creates a persistConfig object that specifies the key and version for the persisted state,
+as well as the storage mechanism to use (in this case, the browser's local storage).
+The persistedReducer constant is created by calling persistReducer with the authReducer and persistConfig as arguments.
+
+The store constant is created by calling configureStore with the
+persistedReducer as the reducer and middleware that ignores actions that are not serializable
+(i.e., actions that include non-plain JavaScript values).
+
+Finally, the code uses ReactDOM.createRoot to create a root element for the
+React app and then renders the app inside a Provider component, which provides the Redux store to the rest of the app.
+The PersistGate component is used to delay rendering the App component until the persisted state has been retrieved and rehydrated.
+The loading prop is set to null to prevent rendering anything while the state is being loaded,
+and the persistor prop is set to persistStore(store), which is created by calling persistStore with the store as an argument.
+
+
+
+
+
+
+
+App.js:
+
+This is a JavaScript/React code for a React app that uses React Router and Material UI.
+
+The App component renders a div with the class name "app".
+Inside this div, the app uses the BrowserRouter component from React Router to set up client-side routing.
+
+The app also uses ThemeProvider from Material UI to provide a theme to the entire app,
+and CssBaseline from Material UI to apply baseline CSS styles to the app.
+
+The mode variable is set to the current value of the mode state,
+which is retrieved using the useSelector hook from the react-redux library.
+The theme variable is set using createTheme from Material UI with the themeSettings object as an argument.
+
+The Routes component from React Router is used to define the app's routes. There are three Route components defined:
+The first Route component matches the root URL path ("/") and renders the LoginPage component.
+
+The second Route component matches the "/home" path and conditionally renders the
+HomePage component or redirects the user to the login page using the Navigate component.
+
+The isAuth variable is set to true if the token state is truthy, indicating that the user is authenticated.
+
+The third Route component matches the "/profile/:userId" path and conditionally renders the
+ProfilePage component or redirects the user to the login page using the Navigate component.
+
+The :userId parameter in the path for the third Route component indicates that the
+ProfilePage component expects a dynamic URL parameter that will be passed as a prop.
+
+Finally, the App component is exported as the default export of the module.
+
+
+
+
+
+
+
+
+index.css:
+
+This is a CSS code snippet that imports two font families from Google Fonts and applies them to the
+HTML, body, and #root elements of the web page.
+
+The @import rule is used to import the font families from the Google Fonts API using their URLs.
+
+The html, body, and #root selectors are used to apply CSS styles to the entire web page.
+The height and width properties are set to 100% to ensure that the page takes up the full height and width of the viewport.
+
+The font-family property is set to "Rubik", which is a sans-serif font family imported from Google Fonts.
+This font family is applied to all text within the HTML, body, and #root elements of the web page.
+
+Overall, this code snippet sets up the basic styling for the web page by importing and applying the Rubik font family.
+
+
+
+
+
+
+
+
+state/index.js:
+
+This is a code that uses createSlice from the Redux Toolkit to define a Redux slice called authSlice.
+A slice is a collection of Redux functions that operate on a specific part of the Redux store.
+
+The initialState object defines the initial state of the authSlice slice. It contains properties for mode, user, token, and posts.
+
+The createSlice function is called with an object argument that defines the name of the
+slice, the initialState, and an object of reducers.
+Each reducer is a function that takes the current state and an action and returns a new state.
+
+In this case, there are six reducers defined:
+
+setMode: toggles between "light" and "dark" modes by updating the mode property of the state.
+setLogin: sets the user and token properties of the state to the payload of the action.
+setLogout: sets the user and token properties of the state to null.
+setFriends: updates the friends property of the user object in the state with the payload of the action.
+setPosts: sets the posts property of the state to the payload of the action.
+setPost: updates a specific post in the posts array of the state with the payload of the action.
+The authSlice.actions object contains all of the action creators generated by the createSlice function.
+These can be used to dispatch actions to the authSlice slice from other parts of the application.
+
+The default export of this module is the authSlice.reducer function,
+which is the reducer function generated by createSlice for the authSlice slice.
+This can be used in the store configuration to create the Redux store.
+
+
+
+
+
+
+
+
+
+state/theme.js:
+
+This code exports color design tokens and a function that generates MUI theme settings based on a given mode.
+The color tokens contain hex codes for various shades of grey and a primary color.
+
+The themeSettings function returns an object containing the MUI theme settings,
+including the palette object with mode-specific values for the primary color and shades of grey,
+and the typography object with font family and size settings for various headings.
+
+The function takes a single argument mode, which is used to determine the palette values for either "dark" or "light" mode.
+In dark mode, the primary color is a darker shade of blue and the shades of grey are lighter.
+The background color is also darker. In light mode, the primary color is a lighter shade of blue and the shades of grey are darker.
+The background color is also lighter.
+
+Overall, this code provides a simple and flexible way to generate MUI themes with consistent color and typography settings.
+
+
+
+
+
+
+
+
+scenes/Login page/LoginPage.jsx:
+
+This code defines a functional component called LoginPage.
+It imports various MUI components such as Box, Typography, useTheme, useMediaQuery, and Form.
+
+Inside the component, the useTheme and useMediaQuery hooks are used to dynamically set
+the width and background color of certain components based on the theme and screen size.
+
+The component renders two Box components with a Typography and Form component nested inside.
+The first Box component is the header section, which displays the "MEMEIFY" logo.
+The second Box component contains the login form, which includes the Form component.
+
+The width and padding of the second Box component are also dynamically set based on the screen size.
+Finally, the component is exported as the default export.
+
+
+
+
+
+
+scenes/Login page/Form.jsx:
+
+This is a Form component in React that allows users to either log in or register.
+The component uses Material UI components to display form elements, and it uses Formik and Yup for form validation.
+The component also uses the react-dropzone library to allow users to upload an image as part of their registration.
+
+The component has two pages: login and register, which are controlled by the pageType state variable.
+The isLogin and isRegister variables are used to conditionally render form elements based on which page the user is on.
+
+The component also has two separate Yup schemas for login and registration forms,
+which define the required fields and validation rules for each form.
+
+The handleFormSubmit function is used to submit the form data, which is determined by the isLogin and isRegister variables.
+If the user is logging in, the login function is called, which sends a POST request to the backend to authenticate the user.
+If the user is registering, the register function is called, which sends a POST request to the backend to create a new user account.
+
+When the user is registering, the register function sends form data to the backend along with an image uploaded using react-dropzone.
+If the form data is successfully saved to the backend, the setPageType function is called to switch the page to the login page.
+
+When the user successfully logs in, the dispatch function from the
+Redux library is used to save the user's information to the global state,
+and the user is redirected to the home page using the navigate function from the React Router library.
+
+The form elements for the registration page include fields for the user's
+first and last name, email address, password, country, city, occupation, and profile picture.
+The form elements for the login page include fields for the user's email address and password.
+
+
+
+
+
+
+
+scenes/Navbar/Navbar.jsx:
+
+This is a React component that creates a navbar with several options. Here's a breakdown of what it does:
+
+Imports several components from the Material UI library:
+Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery, DarkMode, LightMode, Menu, and Close.
+Imports two functions from the react-redux library: useSelector and useDispatch.
+Imports a custom component called FlexBetween.
+Defines a state variable called isMobileMenuToggled using the useState hook. This is used to toggle the visibility of a mobile menu.
+Defines several other variables using hooks and selectors:
+dispatch is a reference to the Redux dispatch function.
+navigate is a reference to the useNavigate hook, which allows navigation to different pages in a React Router application.
+user is the currently logged in user, which is retrieved from the Redux store using the useSelector hook.
+isNonMobileScreens is a boolean value that indicates whether the screen size is greater than or equal to 1000px.
+This is determined using the useMediaQuery hook.
+theme is the current theme object from the Material UI useTheme hook.
+Several other variables define specific colors and styles based on the theme.
+Defines a fullName variable that concatenates the user's first and last name.
+Returns a FlexBetween component that contains the following elements:
+A Typography component that displays the website name and is clickable to navigate to the home page.
+Depending on the screen size, either a desktop navbar or a mobile menu:
+Desktop navbar:
+An IconButton that toggles the dark/light mode of the website.
+A FormControl containing a Select component that displays the user's full name and allows them to log out.
+Mobile menu:
+An IconButton that toggles the dark/light mode of the website.
+A FormControl containing a Select component that displays the user's full name and allows them to log out.
+A Close icon that allows the user to close the mobile menu.
+The mobile menu is only displayed if isMobileMenuToggled is true and the screen size is less than 1000px.
+Overall, this component creates a responsive navbar that allows users to toggle the dark/light mode of the website and log out,
+and displays different elements depending on the screen size.
+
+
+
+
+
+
+
+
+scenes/Home page/HomePage.jsx:
+
+This is a React functional component named HomePage that renders the home page of an application.
+It imports various components from different files such as
+Navbar, AdvertWidget, FriendListWidget, MyPostWidget, PostsWidget, and UserWidget.
+It also uses hooks such as useMediaQuery and useSelector.
+
+In the component, useMediaQuery hook is used to determine whether the screen width is greater than or equal to 1000px.
+The useSelector hook is used to retrieve the user object from the Redux store,
+and the _id and picturePath properties are destructured from it.
+
+The component returns a Box component that contains a Navbar component and another
+Box component that contains multiple widgets such as UserWidget, MyPostWidget, PostsWidget, AdvertWidget, and FriendListWidget.
+The layout of these widgets changes based on the screen width.
+If the screen width is greater than or equal to 1000px, the widgets are laid out horizontally,
+otherwise they are laid out vertically.
+
+The UserWidget component displays user information such as the user's profile picture and name.
+The MyPostWidget component displays a form for creating new posts.
+The PostsWidget component displays a list of posts created by the user.
+The AdvertWidget component displays an advertisement. The FriendListWidget component displays a list of the user's friends.
+
+
+
+
+
+
+
+scenes/Profile page/ProfilePage.jsx:
+
+This is a React functional component that displays a profile page for a user.
+It imports various components from other files such as Navbar, FriendListWidget, MyPostWidget, PostsWidget, and UserWidget.
+It also imports hooks such as useEffect, useState, useParams, useSelector, and useMediaQuery from react and @mui/material libraries.
+
+The component receives the user id from the URL params, retrieves the user's data from the server using a fetch call,
+and stores it in the component state using the useState hook.
+The token needed for the authentication process is retrieved from the Redux store using the useSelector hook.
+
+The component renders a Box component that contains the Navbar component and two Box components that display
+user information, posts, and friends' list.
+The UserWidget component displays the user's profile picture, name, and other information,
+and the FriendListWidget component displays the list of the user's friends.
+The MyPostWidget component displays a form that allows the user to add a new post,
+and the PostsWidget component displays a list of the user's posts.
+If the isProfile prop is set to true, it will display the post options such as delete and edit.
+
+The layout of the page is determined by the useMediaQuery hook,
+which returns true if the screen width is greater than or equal to 1000px.
+If the screen width is less than 1000px, the user and friend components are displayed in a column, and there is a gap between them.
+If the screen width is greater than or equal to 1000px, the user component is displayed on the left side of the page,
+and the posts and friend components are displayed on the right side of the page.
+There is a gap between the user and post components, and the friend component is displayed below the posts component.
+
+
+
+
+
+
+
+components/FlexBetween.jsx:
+
+This is a JavaScript code snippet that defines a custom styled component named "FlexBetween" using Material-UI's "styled" function.
+The component is based on the "Box" component from Material-UI's library.
+
+The component sets the following styles:
+
+"display: flex" to make the component a flex container.
+"justify-content: space-between" to align the child elements in a row with equal space between them.
+"align-items: center" to vertically center the child elements.
+The "styled" function takes the "Box" component as its argument and applies the
+CSS styles defined inside the curly braces using the JavaScript object literal syntax.
+
+Finally, the component is exported as the default export of this module.
+This means that when other files import this module, they will get this "FlexBetween" component as the default export.
+
+
+
+
+
+
+
+components/Friend.jsx:
+
+This is a React component that represents a single friend item in a friend list.
+It takes props such as friendId, name, subtitle, and userPicturePath to render the friend's information
+along with an icon button to add or remove the friend.
+
+The component uses various MUI components such as
+Box, IconButton, and Typography to render the friend information and the icon button.
+It also uses custom components such as FlexBetween and UserImage to add additional styling and functionality.
+
+When the icon button is clicked, the patchFriend function is called which sends a
+PATCH request to the server to either add or remove the friend based on the current state of the friend.
+If the friend is currently a friend, the function will remove the friend,
+and if the friend is not a friend, the function will add the friend.
+Once the server sends a response with updated friend data,
+the component updates the friend state in the Redux store using the setFriends action.
+
+
+
+
+
+
+
+components/UserImage.jsx:
+
+This component is a simple image wrapper for displaying user profile pictures.
+It receives two props, image and size, where image is the path to the user's
+profile picture and size determines the width and height of the image.
+
+The component renders an <img> element with the specified width and height,
+and sets the src attribute to the URL of the profile picture, using a base URL of http://localhost:3001/assets/.
+The style attribute is used to apply some styling to the image,
+such as object-fit: cover to make sure the image fills the container and border-radius: 50% to make it circular.
+
+
+
+
+
+
+
+components/WidgetWrapper.jsx:
+
+WidgetWrapper is a styled component that wraps other components with a consistent style for widgets in the application.
+It has a padding of 1.5rem at the top, 1.5rem on the sides, and 0.75rem at the bottom.
+It has a background color of theme.palette.background.alt, which is a color from the theme palette used for alternative backgrounds.
+It has a border radius of 0.75rem, giving it rounded corners.
+
+By using styled from @mui/system, we can create a custom styled component that takes in the
+Box component from @mui/material as a parameter. We can then define the styles for this component using an arrow function,
+where we can access the theme object and define the styles based on it.
+This allows us to create consistent and reusable styles throughout the application.
+
+
+
+
+
+
+
+
+scenes/Widgets/AdvertWidget.jsx:
+
+This is a React component called AdvertWidget. It imports Typography and useTheme from @mui/material,
+FlexBetween and WidgetWrapper from custom components.
+
+Within the component, it uses the useTheme hook to access the theme object and extract color values.
+It renders a WidgetWrapper component and within it displays an image with some text and links.
+The image is imported from a URL and displayed with a rounded border radius.
+The text includes the author name, a link to their portfolio website, and a description of their skills and experience.
+
+
+
+
+
+
+
+scenes/Widgets/FriendListWidget.jsx:
+
+This is a React component that renders a widget for displaying a list of friends for a given user.
+
+It imports several components from the Material-UI library, such as Box, Typography, and useTheme.
+It also imports a custom Friend component and a WidgetWrapper component.
+
+It defines a functional component FriendListWidget that takes a userId prop as input.
+It uses useDispatch and useSelector hooks from the
+React-Redux library to access the token and friends state variables from the global store.
+
+It defines an async function getFriends that sends a GET request to the backend
+API to fetch the list of friends for the given userId, using the token for authentication.
+The response data is then dispatched to the global store using the setFriends action creator.
+
+The useEffect hook is used to call the getFriends function once, when the component is mounted.
+
+The component renders a WidgetWrapper component that contains a Typography component displaying the title "Friend List",
+and a Box component containing a list of Friend components, one for each friend in the friends array.
+
+Each Friend component displays the friend's name, occupation, and profile picture, using the properties passed as props.
+
+
+
+
+
+
+
+scenes/Widgets/MyPostWidget.jsx:
+
+This is a React component named MyPostWidget that is responsible for rendering a post input form for the user to create a new post.
+The component uses Material-UI components for styling and icons.
+
+When the user types in the input field, the text is stored in the post state variable using the useState hook.
+When the user clicks on the "POST" button, the handlePost function is called.
+This function sends a POST request to the server with the post information, including the userId, description, and picture
+(if an image was uploaded).
+
+If the server successfully saves the post, it sends back a list of all posts which are then stored in the
+Redux store using the setPosts action. The component also resets the image and post state variables to their initial values.
+
+The component also provides the ability for the user to upload an image along with their post.
+When the user clicks on the "Image" button, the isImage state variable is toggled,
+and the component conditionally renders a Dropzone component for the user to drag and drop an image file.
+If an image is uploaded, its data is stored in the image state variable using the useState hook.
+If the user clicks on the "DeleteOutlined" icon, the image state variable is reset to null.
+
+
+
+
+
+
+
+
+scenes/Widgets/PostsWidget.jsx:
+
+This is a React component that displays a list of posts.
+It uses the useEffect hook to fetch the posts from the server when the component mounts,
+and it uses the useSelector hook to get the posts and token state variables from the Redux store.
+It also uses the useDispatch hook to dispatch the setPosts action to update the posts state variable in the Redux store.
+
+The component takes two props: userId and isProfile.
+If isProfile is true, the component will fetch the posts for a specific user (userId). Otherwise, it will fetch all the posts.
+
+The component then maps over the posts array and renders a PostWidget component for each post.
+The PostWidget component is passed the post's data as props.
+
+Overall, this component is a simple implementation of a posts list and
+demonstrates the use of Redux for managing state in a React application.
+
+
+
+
+
+
+
+
+scenes/Widgets/PostWidget.jsx:
+
+This code defines a PostWidget component that renders a single post.
+The component takes several props such as postId, postUserId, name, description, location, city,
+picturePath, userPicturePath, and likes.
+
+The component renders a Friend component which displays the name and profile picture of the post creator.
+It also displays the post description and image, if available.
+
+The component also displays the number of likes for the post and a button to like/unlike the post.
+The like button is implemented as a IconButton component from the MUI library,
+and the icon changes depending on whether the current user has liked the post or not.
+
+When the like button is clicked, a PATCH request is sent to the server to update the post likes.
+The updated post is then dispatched to the Redux store using the setPost action creator.
+
+
+
+
+
+
+
+scenes/Widgets/UserWidget.jsx:
+
+This is a React component named UserWidget that displays information about a user.
+It receives two props: userId, which is the ID of the user to display information about, and picturePath,
+which is the path to the user's profile picture.
+
+The component first defines state variables user and setUser using the useState hook.
+It also imports several MUI components and icons, as well as two custom components (UserImage and FlexBetween).
+It uses the useSelector hook from the react-redux library to get the token from the global state.
+
+The component then defines an async function named getUser that sends a
+GET request to the backend API to fetch information about the user with the specified ID.
+It uses the Authorization header with the Bearer token to authenticate the request.
+When the response is received, it sets the user state variable to the fetched data.
+
+The getUser function is called once when the component is mounted using the useEffect hook.
+
+If the user state variable is null, the component returns null.
+Otherwise, it extracts several properties from the user object
+(firstName, lastName, location, city, occupation, and friends) and renders them using various MUI components and icons.
+The FlexBetween component is used to create a row with the user's profile picture, name, and friend count,
+as well as a button to navigate to the user's profile.
+
+The component also renders the user's location, city, and occupation using a similar layout.
+
+Finally, the component renders a divider component to separate the two rows of information.
+
+
+
+

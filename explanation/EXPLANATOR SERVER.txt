@@ -1,0 +1,362 @@
+Installation:
+
+First install these packages with npm install:
+nodemon, express, body-parser, bcrypt, cors, dotenv, gridfs-stream, multer, multer-gridfs-storage,
+helmet, morgan, jsonwebtoken, mongoose
+
+Then run: npm init -y
+
+After that I added: "type": "module" in package.json so that I can use modules instead of require statements
+
+
+
+
+
+
+index.js:
+
+
+
+This code is written in Node.js and uses the Express.js framework to create an HTTP server and handle routing.
+It also uses various middleware to handle different aspects of the server, such as parsing incoming request bodies,
+handling file uploads, securing HTTP headers, logging HTTP requests, and enabling Cross-Origin Resource Sharing (CORS).
+Here's a breakdown of each line of code:
+
+import express from "express" - Imports the Express framework to create an HTTP server and handle routing.
+
+import bodyParser from "body-parser" - Imports the body-parser middleware to parse incoming request bodies.
+
+import mongoose from "mongoose" - Imports the Mongoose library for MongoDB, which provides an interface to interact with the database.
+
+import cors from "cors" - Imports the CORS middleware to enable Cross-Origin Resource Sharing (CORS) for the server.
+
+import dotenv from "dotenv" - Imports the dotenv library to load environment variables from a .env file.
+
+import multer from "multer" - Imports the multer middleware to handle file uploads.
+
+import helmet from "helmet" - Imports the helmet middleware to secure the HTTP headers of the server.
+
+import morgan from "morgan" - Imports the morgan middleware for logging HTTP requests.
+
+import path from "path" - Imports the path module to manipulate file paths.
+
+import { fileURLToPath } from "url" - Imports the fileURLToPath function from the url module to convert a file URL to a file path.
+
+const __filename = fileURLToPath(import.meta.url) - Gets the current file's path using the import.meta.url property and the fileURLToPath function.
+
+const __dirname = path.dirname(__filename) - Gets the directory name of the current file using the path module and the __filename constant.
+
+dotenv.config() - Loads the environment variables from the .env file into the process.env object.
+
+const app = express() - Creates a new instance of the Express application.
+
+app.use(express.json) - Uses the built-in express.json middleware to parse JSON request bodies.
+
+app.use(helmet) - Uses the helmet middleware to secure the HTTP headers of the server.
+
+app.use(helmet.crossOriginEmbedderPolicy({policy: "cross-origin"})) - Sets the Cross-Origin Embedder Policy (COEP) HTTP header to "cross-origin"
+to enable cross-origin embedding.
+
+app.use(morgan("common")) - Uses the morgan middleware to log HTTP requests to the console in the "common" format.
+
+app.use(bodyParser.json({limit: "30mb", extended: true})) - Uses the bodyParser middleware
+to parse JSON request bodies with a maximum size of 30 megabytes and support for nested objects.
+
+app.use(bodyParser.urlencoded({limit: "30mb", extended: true})) - Uses the bodyParser middleware to parse
+URL-encoded request bodies with a maximum size of 30 megabytes and support for nested objects.
+
+app.use(cors()) - Uses the cors middleware to enable Cross-Origin Resource Sharing (CORS) for the server, allowing requests from any origin.
+
+app.use("/assets", express.static(path.join(__dirname, "public/assets"))) - Sets up a static file server to serve files
+from the "public/assets" directory under the "/assets" route.
+
+const storage = multer.diskStorage({...}) - Configures a disk storage engine for the multer middleware to save uploaded files to the local file system.
+
+destination: function(req, file, cb) {...} - Sets the destination directory where the uploaded files should be stored on the local file system.
+
+filename: function(req, file, cb) {...} - Generates a unique filename for each uploaded file to avoid naming conflicts.
+
+const upload = multer({ storage: storage }) - Creates a new instance of the multer middleware with the configured disk storage engine.
+
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true}) - Connects to the MongoDB database
+using the Mongoose library with the URL specified in the process.env.MONGODB_URI environment variable and enabling the
+useNewUrlParser and useUnifiedTopology options.
+
+const db = mongoose.connection - Creates a new database connection instance with the connected MongoDB database.
+
+db.on("error", console.error.bind(console, "MongoDB connection error:")) - Registers a callback function to log any errors
+that occur during the database connection.
+
+db.once("open", function() {...}) - Registers a callback function to be called once the database connection is successfully opened.
+
+app.use("/api/users", userRoutes) - Registers the userRoutes module to handle HTTP requests under the "/api/users" route.
+
+app.use("/api/posts", postRoutes) - Registers the postRoutes module to handle HTTP requests under the "/api/posts" route.
+
+app.listen(process.env.PORT, function() {...}) - Starts the HTTP server listening on the port specified in the process.env.PORT environment
+variable and logs a message to the console once the server is running.
+
+
+
+
+
+
+
+
+
+models/User.js:
+
+This is a JavaScript module that defines a Mongoose schema for a User model and exports it as a default module.
+The mongoose package is imported at the beginning of the file. Then, a new Mongoose schema is created using the mongoose.Schema() constructor.
+The schema defines the fields and their types for a user document. Here are the fields in this schema:
+
+firstName: A string representing the user's first name. It's required, and must be between 2 and 50 characters long.
+
+lastName: A string representing the user's last name. It's required, and must be between 2 and 50 characters long.
+
+email: A string representing the user's email. It's required, unique, and can be at most 50 characters long.
+
+password: A string representing the user's password. It's required, and must be at least 5 characters long.
+
+picturePath: A string representing the file path for the user's profile picture. It has a default value of an empty string.
+
+friends: An array containing the user's friends. It has a default value of an empty array.
+
+location: A string representing the user's location.
+
+occupation: A string representing the user's occupation.
+
+viewedProfile: A number representing the number of times the user has viewed another user's profile.
+
+impressions: A number representing the number of times the user's profile has been viewed by others.
+
+The timestamps option is passed to the schema as an object to enable automatic timestamps for each document in the schema.
+
+
+Finally, the schema is used to create a User model using the mongoose.model() method, which is exported as a default module.
+
+
+
+
+
+
+
+
+
+
+models/Post.js:
+
+This code exports a Post model created using Mongoose. The Post model represents a post in a social media application and has the following properties:
+
+userId: The ID of the user who created the post. This property is a required string.
+
+firstName: The first name of the user who created the post. This property is a required string.
+
+lastName: The last name of the user who created the post. This property is a required string.
+
+location: The location of the post. This property is a string.
+
+description: The description of the post. This property is a string.
+
+picturePath: The path of the post's picture. This property is a string.
+
+userPicturePath: The path of the user's profile picture. This property is a string.
+
+likes: A map that stores the likes for the post. The keys are user IDs and the values are boolean values
+that indicate whether the user has liked the post or not.
+
+timestamps: The timestamps of the post. This property is an object that includes createdAt and updatedAt fields.
+
+The Post model is created by passing a postSchema object to the mongoose.model() method.
+
+The postSchema defines the schema for the Post model and includes the properties and options for the model.
+
+
+
+
+
+
+
+
+
+
+
+routes/auth.js:
+
+This is setting up a router using the Express.js framework for handling HTTP POST requests to the "/login" route.
+It imports the login function from the "../controllers/auth.js" module and defines it as the handler function for the route.
+
+Then, it exports the router as a default module, which can be used by other parts of the application.
+When a POST request is made to the "/login" route, the Express router will invoke the login function,
+which is defined in the "../controllers/auth.js" module. This function will perform the logic for logging in the user,
+such as checking the user credentials and generating an authentication token.
+
+
+
+
+
+
+
+
+
+controllers/auth.js:
+
+This code defines two controller functions for user registration and login, respectively.
+
+The register function handles a POST request to register a new user.
+It takes in the request object (req) and response object (res) as parameters.
+It first extracts the user data from the request body and hashes the password using the bcrypt library.
+It then creates a new instance of the User model with the hashed password and saves it to the database using the .save() method.
+If there are any errors, it sends a 500 status code with the error message in JSON format.
+If the user is successfully saved, it sends a 201 status code with the saved user object in JSON format.
+
+The login function handles a POST request to login a user. It takes in the request object (req) and response object (res) as parameters.
+It first extracts the email and password from the request body and uses the email to find the user in the database using the .findOne() method.
+If the user is not found, it sends a 400 status code with the message "User does not exist."
+If the user is found, it uses the bcrypt library to compare the hashed password in the database with the password provided in the request body.
+If the passwords do not match, it sends a 400 status code with the message "Invalid credentials."
+If the passwords do match, it generates a JSON web token using the jwt.sign() method
+with the user's id and a secret key stored in the environment variables.
+It then deletes the password field from the user object and sends a 200 status code with the JSON web token and user object in JSON format.
+If there are any errors, it sends a 500 status code with the error message in JSON format.
+
+This implementation follows good security practices such as hashing the password,
+using a JWT to authenticate the user, and removing the password field from the user object sent back to the client.
+
+
+
+
+
+
+
+
+
+middleware/auth.js:
+
+This is a middleware function that verifies a JSON web token (JWT) that is sent in the header of a request.
+The function takes in three parameters: req, res, and next.
+In this function, the req.header("Authorization") method is used to retrieve the token from the header of the request.
+
+If there is no token, the function returns a response with a 403 status code and an "Access Denied" message.
+
+If the token is present, the function checks if it starts with "Bearer ". If it does, the function removes "Bearer " from the token string.
+Then, the jwt.verify() method is used to verify the token using the secret key stored in the process.env.JWT_SECRET variable.
+
+If the token is successfully verified, the function sets req.user to the decoded user object
+and calls the next() function to pass control to the next middleware or route handler function.
+
+If there is an error during verification, the function returns a response with a 500 status code and an error message in JSON format.
+
+
+
+
+
+
+
+
+
+routes/posts.js:
+
+Another Express router is created with three endpoints:
+A GET request to the root endpoint ("/") that calls the getFeedPosts function from the "posts" controller when the endpoint is hit,
+but only after verifying the token using the verifyToken middleware function.
+
+A GET request to the "/:userId/posts" endpoint that calls the getUserPosts function from the "posts" controller when the endpoint is hit,
+but only after verifying the token using the verifyToken middleware function.
+
+A PATCH request to the "/:id/like" endpoint that calls the likePost function from the "posts" controller when the endpoint is hit,
+but only after verifying the token using the verifyToken middleware function.
+
+
+
+
+
+
+
+
+
+controllers/posts.js:
+
+This file exports four controller functions for handling post-related requests:
+
+createPost: This function handles a POST request to create a new post. It expects a request body with
+userId, description, and picturePath fields. It first finds the user by userId in the User collection using await User.findById(userId).
+It then creates a new Post object using the Post model imported from ../models/Post.js,
+and sets its properties based on the user object and request body.
+It saves the new post object to the Post collection with await newPost.save(),
+and returns all the posts in the collection with const post = await Post.find().
+If there is an error, it sends a 409 (Conflict) status code with a message indicating the error.
+
+getFeedPosts: This function handles a GET request to get all posts in the Post collection.
+It uses await Post.find() to retrieve all the posts, and returns them with a 200 (OK) status code.
+If there is an error, it sends a 404 (Not Found) status code with a message indicating the error.
+
+getUserPosts: This function handles a GET request to get all posts by a particular user.
+It expects a request parameter with userId. It uses await Post.find({ userId }) to retrieve all the posts with the specified userId,
+and returns them with a 200 (OK) status code. If there is an error, it sends a 404 (Not Found) status code with a message indicating the error.
+
+likePost: This function handles a PATCH request to like or unlike a post.
+It expects a request parameter with id (the post id) and a request body with userId.
+It uses await Post.findById(id) to find the post by id.
+It checks if the user with userId has already liked the post by calling post.likes.get(userId).
+If the user has already liked the post, it removes the like by calling post.likes.delete(userId).
+If the user has not liked the post, it adds the like by calling post.likes.set(userId, true).
+It then updates the post in the Post collection with await Post.findByIdAndUpdate(id, { likes: post.likes }, { new: true }).
+Finally, it returns the updated post object with a 200 (OK) status code.
+If there is an error, it sends a 404 (Not Found) status code with a message indicating the error.
+
+
+
+
+
+
+
+
+
+routes/users.js:
+
+Another Express router is created with three endpoints:
+A GET request to the "/:id" endpoint that calls the getUser function from the "users" controller when the endpoint is hit,
+but only after verifying the token using the verifyToken middleware function.
+
+A GET request to the "./:id/friends" endpoint that calls the getUserFriends function from the "users" controller when the endpoint is hit,
+but only after verifying the token using the verifyToken middleware function.
+
+A PATCH request to the "/:id/:friendId" endpoint that calls the addRemoveFriend function from the "users" controller when the endpoint is hit,
+but only after verifying the token using the verifyToken middleware function.
+
+
+
+
+
+
+
+
+
+
+controllers/users.js:
+
+This code defines three functions related to user data.
+
+getUser: is responsible for getting a single user's data from the database by their id which is passed as a URL parameter.
+It uses the findById method of the User model to find the user with the given id and returns it in the response with a status of 200.
+
+getUserFriends: is responsible for getting a list of a user's friends by their id.
+It first finds the user by their id using the findById method, and then uses the map function with Promise.all
+to asynchronously fetch all the friends' data using their id.
+Then it formats the friend data in the desired format and returns it in the response with a status of 200.
+
+addRemoveFriend: is responsible for adding or removing a friend for a user.
+It takes two URL parameters id and friendId which represent the user's id and the id of the friend respectively.
+It first finds both users using their id using the findById method,
+and then updates the friends array of both users accordingly, depending on whether the friendId already exists in the user's friends array.
+If the friendId exists in the user's friends array, it removes it, and vice versa.
+It then saves the updated user data using the save method. Finally,
+it uses the same getUserFriends function to get and return the updated list of friends in the response with a status of 200.
+
+
+
+
+
+
+
